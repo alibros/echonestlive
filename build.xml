@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<project name="SevenUpLive" default="default" basedir=".">
+
+  <target name="default">
+  	<echo>Usage: ant &lt;target&gt;</echo>
+  	<echo>Targets:</echo>
+  	<echo>build: build the code</echo>
+  	<echo>jar: build the jar file</echo>
+  	<echo>clean: clean the build</echo>
+  </target>	
+  
+  <target name="_init">
+    <property environment="env" />
+    <property file="./build.properties" />
+  	
+  	<mkdir dir="${bin.folder}" />
+  	<mkdir dir="${out.folder}" />
+  	
+  	<echo>Locations in build</echo>
+  	<echo>Sources=${src.folder}</echo>
+  	<echo>Libraries=${lib.folder}</echo>
+  	<echo>Binaries=${bin.folder}</echo>
+  	<echo></echo>
+  	
+  	<echo>Libraries in build</echo>
+  	<echo>${core.jar}</echo>
+  	  	
+    <path id="echonestlive.classpath">
+    	<fileset file="${lib.folder}/${core.jar}"/>
+		<fileset file="${MAX_HOME}/${max.jar}"/>
+	</path>
+	
+  </target>
+	
+  <target name="build" depends="_init">
+    <!-- Build as 1.5 source for Compatibility reasons -->
+  	<javac srcdir="${src.folder}" destdir="${bin.folder}" classpathref="echonestlive.classpath" source="1.5" target="1.5"/>
+  </target>
+
+  <target name="clean" depends="_init">
+    <delete quiet="false" dir="${bin.folder}" />
+  </target>	  	
+  
+  <target name="jar" depends="build">
+    <jar jarfile="${out.folder}/EchoNestLive-${release.version}.jar">
+        <fileset dir="${bin.folder}"/>
+        <manifest>
+            <attribute name="Class-Path" value="${core.jar}"/>
+        </manifest>
+    </jar>
+  </target>
+  
+</project>
